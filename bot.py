@@ -47,7 +47,7 @@ def start(bot,message):
 
 
 @bot.on_callback_query()
-def callback_query(client,callbackQuery):
+def callback_query_disk_usage(client,callbackQuery):
     print(CallbackQuery)
     diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
     diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
@@ -66,7 +66,8 @@ def callback_query(client,callbackQuery):
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
         text,
-        show_alert=True)
+        show_alert=True
+        )
 
 
 print("bot started")
