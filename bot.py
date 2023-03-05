@@ -48,7 +48,6 @@ def start(bot,message):
 
 @bot.on_callback_query()
 def callback_query_disk_usage(client,callbackQuery):
-    print(CallbackQuery)
     diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
     diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
     diskAvail = int(psutil.disk_usage('/').free/(1024*1024*1024))
@@ -69,6 +68,59 @@ def callback_query_disk_usage(client,callbackQuery):
         show_alert=True
         )
 
+
+@bot.on_callback_query()
+def callback_query_cpu_and_ram_usage(client,callbackQuery):
+    cpuUsage = psutil.cpu_percent(interval=1)
+    ramTotal = int(psutil.virtual_memory().total/(1024*1024)) #GB
+    ramUsage = int(psutil.virtual_memory().used/(1024*1024)) #GB
+    ramFree = int(psutil.virtual_memory().free/(1024*1024)) #GB
+    ramUsagePercent = psutil.virtual_memory().percent
+    text = '''
+        CPU & RAM Info
+        ---------
+        CPU Usage = {} %
+        RAM
+        Total = {} MB
+        Usage = {} MB
+        Free  = {} MB
+        Used = {} %\n'''.format(cpuUsage,ramTotal,ramUsage,ramFree,ramUsagePercent)
+    if callbackQuery.data == "cpu_and_ram_usage":
+        callbackQuery.answer(
+            text,
+            show_alert=True
+            )
+        
+
+@bot.on_callback_query()
+def callback_query_uptime(client,callbackQuery):
+    upTime = subprocess.check_output(['uptime','-p']).decode('UTF-8')
+    text = upTime
+    if callbackQuery.data == "uptime_server":
+        callbackQuery.answer(
+            text,
+            show_alert=True
+            )
+        
+
+@bot.on_callback_query()
+def callback_query_server_description(client,callbackQuery):
+    uname = subprocess.check_output(['uname','-rsoi']).decode('UTF-8')
+    host = subprocess.check_output(['hostname']).decode('UTF-8')
+    ipAddr = subprocess.check_output(['hostname','-I']).decode('UTF-8')
+    text ='''
+        Server Desc
+        ---------
+        OS = {}
+        Hostname = {} 
+        IP Addr = {}'''.format(uname,host,ipAddr)
+    if callbackQuery.data == "server_description":
+        callbackQuery.answer(
+            text,
+            show_alert=True
+            )
+
+    
 
 print("bot started")
 bot.run()
