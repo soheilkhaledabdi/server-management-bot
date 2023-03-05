@@ -63,12 +63,12 @@ def callback_query(client,callbackQuery):
         Avail = {} GB
         Usage = {} %\n'''.format(diskTotal,diskUsed,diskAvail,diskPercent)
     
-    if callbackQuery.data == "disk_usage":
-        CallbackQuery.answer(
-            callbackQuery.id,
-            text=text,
-            show_alert=True
-            )
+    # if callbackQuery.data == "disk_usage":
+    #     CallbackQuery.answer(
+    #         callbackQuery.id,
+    #         text=text,
+    #         show_alert=True
+    #         )
 
 
 print("bot started")
