@@ -1,4 +1,6 @@
 import os
+import psutil
+import subprocess
 from pyrogram import Client,filters,emoji
 from pyrogram.types import ChatPermissions
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardMarkup,CallbackQuery
@@ -42,6 +44,31 @@ def start(bot,message):
         )
     else : 
         message.reply("u have not permission")
+
+
+@bot.on_callback_query()
+def callback_query(client,callbackQuery):
+
+    diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
+    diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
+    diskAvail = int(psutil.disk_usage('/').free/(1024*1024*1024))
+    diskPercent = psutil.disk_usage('/').percent
+
+    
+    text = '''
+        Disk Info
+        ---------
+        Total = {} GB
+        Used = {} GB
+        Avail = {} GB
+        Usage = {} %\n'''.format(diskTotal,diskUsed,diskAvail,diskPercent)
+    
+    if callbackQuery.data == "disk_usage":
+        CallbackQuery.answer(
+            callback_query.id,
+            text=text,
+            show_alert=True
+            )
 
 
 print("bot started")
