@@ -30,15 +30,18 @@ start_message_button=[
 # command start and help
 # filter with command,private,number id 
 
-@bot.on_message(filters.command(['start' , 'help']) & filters.private & filters.migrate_from_chat_id_filter(['1734062356']))
+@bot.on_message(filters.command(['start' , 'help']) & filters.private)
 def start(bot,message):
-    text = start_message
-    reply_markup = InlineKeyboardMarkup(start_message_button)
-    message.reply(
-        text=text,
-        reply_markup=reply_markup,
-        disable_web_page_preview=True
-    )
+    if message.chat.id == 1734062356 :
+        text = start_message
+        reply_markup = InlineKeyboardMarkup(start_message_button)
+        message.reply(
+            text=text,
+            reply_markup=reply_markup,
+            disable_web_page_preview=True
+        )
+    else : 
+        message.reply("u have not permission")
 
 
 print("bot started")
