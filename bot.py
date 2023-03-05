@@ -6,6 +6,12 @@ from pyrogram.types import ChatPermissions
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardMarkup,CallbackQuery
 
 
+diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
+diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
+diskAvail = int(psutil.disk_usage('/').free/(1024*1024*1024))
+diskPercent = psutil.disk_usage('/').percent
+
+print(diskTotal)
 # migrate_from_chat_id
 bot = Client("monitoring server bot"
              ,api_id=29365133,api_hash="722d0eb612a789286c0ed9966c473ddf"
@@ -65,7 +71,7 @@ def callback_query(client,callbackQuery):
     
     if callbackQuery.data == "disk_usage":
         CallbackQuery.answer(
-            callback_query.id,
+            callbackQuery.id,
             text=text,
             show_alert=True
             )
