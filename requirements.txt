@@ -1,4 +1,6 @@
 psutil
+shutil
 dotenv
 pyrogram
 subprocess
+speedtest-cli
