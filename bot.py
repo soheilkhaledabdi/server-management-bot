@@ -10,13 +10,14 @@ from pyrogram import enums
 load_dotenv()
 bot = Client(
             os.getenv("BOT_NAME")
-            ,int(api_id=os.getenv("API_ID"))
+            ,api_id=os.getenv("API_ID")
             ,api_hash=os.getenv('API_HASH')
             ,bot_token=os.getenv("BOT_TOKEN"))
 
 
 
 
+# print(os.system("ls -la"))
 
 
 # Users who have access permission to use the bot
@@ -30,6 +31,18 @@ users_id = [1734062356,1033070918]
 start_message = "Choose your operation"
 start_message_button=[
     [
+    InlineKeyboardButton('Monitoring Server' , callback_data="monitoring_server"),
+    InlineKeyboardButton('Operations On The Server' , callback_data="Operations_Server")
+    ]
+]
+
+
+
+
+PAGE1_TEXT = "Select the Server Monitoring operation"
+
+PAGE1_BUTTON = [
+    [
     InlineKeyboardButton('Disk Usage' , callback_data="disk_usage"),
     InlineKeyboardButton('CPU and RAM Usage' , callback_data="cpu_and_ram_usage")
     ]
@@ -37,6 +50,10 @@ start_message_button=[
     [
     InlineKeyboardButton('Uptime Server' , callback_data="uptime_server"),
     InlineKeyboardButton('Server Description',callback_data="server_description")
+    ]
+    ,
+    [
+        InlineKeyboardButton('Back To Page 1' , callback_data="back_to_menu")
     ]
 ]
 
@@ -125,8 +142,17 @@ def start(bot,message):
 
 @bot.on_callback_query()
 def callback_query_disk_usage(client,callbackQuery):
-    bot.send_chat_action(message.chat.id,enums.ChatAction.TYPING)
     # send disk usage
+    if callbackQuery.data == "monitoring_server":
+        callbackQuery.edit_message_text(
+            PAGE1_TEXT,
+            reply_markup=InlineKeyboardMarkup(PAGE1_BUTTON)
+        )
+    if callbackQuery.data == "back_to_menu":
+        callbackQuery.edit_message_text(
+            start_message,
+            reply_markup=InlineKeyboardMarkup(start_message_button)
+        )
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
                 dataOfDiskUsage,
