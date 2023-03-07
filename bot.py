@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import psutil
 import subprocess
 from pyrogram import Client,filters
@@ -6,10 +7,12 @@ from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram import enums
 
 # migrate_from_chat_id
-bot = Client("monitoring server bot"
-             ,api_id=29365133,api_hash="722d0eb612a789286c0ed9966c473ddf"
-                ,bot_token="5873524421:AAHWQzlbGhhUdkiwhfanf9dK0SfC_NzYQQ8")
-
+load_dotenv()
+bot = Client(
+            os.getenv("BOT_NAME")
+            ,api_id=os.getenv("API_ID")
+            ,api_hash=os.getenv('API_HASH')
+            ,bot_token=os.getenv("BOT_TOKEN"))
 
 
 
@@ -122,6 +125,7 @@ def start(bot,message):
 
 @bot.on_callback_query()
 def callback_query_disk_usage(client,callbackQuery):
+    bot.send_chat_action(message.chat.id,enums.ChatAction.TYPING)
     # send disk usage
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
