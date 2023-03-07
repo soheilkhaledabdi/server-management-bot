@@ -1,10 +1,9 @@
 import os
 import psutil
 import subprocess
-from pyrogram import Client,filters,emoji
-from pyrogram.types import ChatPermissions
-from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardMarkup,CallbackQuery
-
+from pyrogram import Client,filters
+from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
+from pyrogram import enums
 
 # migrate_from_chat_id
 bot = Client("monitoring server bot"
@@ -119,8 +118,6 @@ def start(bot,message):
                 reply_markup=reply_markup,
                 disable_web_page_preview=True
             )
-        else : 
-            message.reply("you have not permission")
 
 
 @bot.on_callback_query()
