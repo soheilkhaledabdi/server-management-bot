@@ -88,7 +88,6 @@ dataOfInfoServer ='''
     Hostname = {} 
     IP Addr = {}'''.format(uname,host,ipAddr)
 
-print(dataOfInfoServer)
 # end info server
 
 # end
