@@ -10,7 +10,7 @@ from pyrogram import enums
 load_dotenv()
 bot = Client(
             os.getenv("BOT_NAME")
-            ,api_id=os.getenv("API_ID")
+            ,int(api_id=os.getenv("API_ID"))
             ,api_hash=os.getenv('API_HASH')
             ,bot_token=os.getenv("BOT_TOKEN"))
 
