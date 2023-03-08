@@ -249,4 +249,4 @@ def callback_query(client,callbackQuery):
             )      
 
 print("bot started")
-# bot.run()
+bot.run()
