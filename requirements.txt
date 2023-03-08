@@ -1,6 +1,6 @@
 psutil
 shutil
-dotenv
+python-dotenv
 pyrogram
 subprocess
 speedtest-cli
