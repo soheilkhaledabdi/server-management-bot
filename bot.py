@@ -6,6 +6,7 @@ from pyrogram import Client,filters
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram import enums
 import speedtest
+from datetime import datetime
 # migrate_from_chat_id
 load_dotenv()
 bot = Client(
@@ -23,15 +24,24 @@ def internet_speed():
 
 
 def is_user_active(username):
-    result = subprocess.run(['who'], stdout=subprocess.PIPE)
+    result = subprocess.run(['chage', '-l', username], stdout=subprocess.PIPE)
     output = result.stdout.decode().strip()
-    users = output.split('\n')
-    for user in users:
-        if username in user:
-            return True
+    for line in output.split('\n'):
+        if 'Account expires' in line:
+            _, date_str = line.split(':')
+            date_str = date_str.strip()
+            if date_str == 'never':
+                return False
+            expiration_date = datetime.strptime(date_str, '%Y-%m-%d')
+            if datetime.now() > expiration_date:
+                return True
+            else:
+                return False
     return False
 
-print(is_user_active('hed'))
+
+username = 'hed'
+print(is_user_active(username))
 # end function
 
 # Users who have access permission to use the bot
