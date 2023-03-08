@@ -31,8 +31,9 @@ users_id = [1734062356,1033070918]
 
 
 # start message and button
-start_message = "Choose your operation"
-start_message_button=[
+
+START_MESSAGE = "Choose your operation"
+START_MESSAGE_BUTTON=[
     [
     InlineKeyboardButton('Monitoring Server' , callback_data="monitoring_server"),
     InlineKeyboardButton('Operations On The Server' , callback_data="Operations_Server")
@@ -85,7 +86,7 @@ PAGE3_BUTTON = [
     ,
     [
         InlineKeyboardButton('back to page 2' , callback_data="back_to_page_2"),
-        InlineKeyboardButton('back to menu' , callback_data="backToMenu")
+        InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
     ]
 ]
 
@@ -177,8 +178,8 @@ dataOfInfoServer ='''
 def start(bot,message):
     for user in users_id:
         if message.chat.id == user :
-            text = start_message
-            reply_markup = InlineKeyboardMarkup(start_message_button)
+            text = START_MESSAGE
+            reply_markup = InlineKeyboardMarkup(START_MESSAGE_BUTTON)
             message.reply(
                 text=text,
                 reply_markup=reply_markup,
@@ -196,8 +197,8 @@ def callback_query(client,callbackQuery):
         )
     if callbackQuery.data == "back_to_menu":
         callbackQuery.edit_message_text(
-            start_message,
-            reply_markup=InlineKeyboardMarkup(start_message_button)
+            START_MESSAGE,
+            reply_markup=InlineKeyboardMarkup(START_MESSAGE_BUTTON)
         )
     if callbackQuery.data == "Operations_Server":
         callbackQuery.edit_message_text(
