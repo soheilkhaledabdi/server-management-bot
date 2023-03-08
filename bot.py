@@ -89,7 +89,7 @@ PAGE3_BUTTON = [
     ]
 ]
 
-CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True)
+CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True).decode("utf-8")
 
 PAGE_USERS = f"select user (count of user[{CountOfUser}])"
 PAGE_USERS_BUTTON = []
