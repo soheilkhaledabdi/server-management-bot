@@ -32,16 +32,12 @@ def is_user_active(username):
             date_str = date_str.strip()
             if date_str == 'never':
                 return False
-            expiration_date = datetime.strptime(date_str, '%Y-%m-%d')
+            expiration_date = datetime.strptime(date_str, '%b %d, %Y')
             if datetime.now() > expiration_date:
                 return True
             else:
                 return False
     return False
-
-
-username = 'hed'
-print(is_user_active(username))
 # end function
 
 # Users who have access permission to use the bot
