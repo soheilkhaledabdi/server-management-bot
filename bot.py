@@ -14,13 +14,24 @@ bot = Client(
             ,api_hash=os.getenv('API_HASH')
             ,bot_token=os.getenv("BOT_TOKEN"))
 
-
 # function get speed test
 def internet_speed():
     speed = speedtest.Speedtest()
     download_speed = round(speed.download() / (1024*1024), 2) 
     upload_speed = round(speed.upload() / (1024*1024), 2)
     return f"speed of Download {download_speed} , speed of upload {upload_speed}"
+
+
+def is_user_active(username):
+    result = subprocess.run(['who'], stdout=subprocess.PIPE)
+    output = result.stdout.decode().strip()
+    users = output.split('\n')
+    for user in users:
+        if username in user:
+            return True
+    return False
+
+print(is_user_active('hed'))
 # end function
 
 # Users who have access permission to use the bot
@@ -106,6 +117,8 @@ for i in range(0, len(getAllUser.decode("utf-8").splitlines()), 2):
     else:
         button1 = InlineKeyboardButton(text=getAllUser.decode("utf-8").splitlines()[i], callback_data=getAllUser.decode("utf-8").splitlines()[i])
         PAGE_USERS_BUTTON.append([button1])
+
+InlineKeyboardButton('root' , callback_data='root')
 # end pages
 
 #  get data from server 
@@ -216,7 +229,16 @@ def callback_query(client,callbackQuery):
             PAGE3_TEXT,
             reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
         )
-
+    for user in getAllUser.decode("utf-8").splitlines():
+        if callbackQuery.data == user:
+            PAGE_USER_EDIT = f"Performing operations on the {user} user"
+            PAGE_USER_EDIT_BUTTON = [
+                InlineKeyboardButton('status',callback_data=[])
+            ]
+            callbackQuery.edit_message_text(
+            PAGE_USER_EDIT,
+            reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
+        )
     if callbackQuery.data == "add_user":
         bot.send_message(callbackQuery.from_user.id,"send name of user")
 
@@ -250,4 +272,4 @@ def callback_query(client,callbackQuery):
             )      
 
 print("bot started")
-bot.run()
+# bot.run()
