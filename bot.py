@@ -280,7 +280,9 @@ def callback_query(client,callbackQuery):
         )   
     if callbackQuery.data == "add_user":
         bot.send_message(callbackQuery.from_user.id,"send name of user")
-
+    if callbackQuery.data == "reboot":
+        bot.send_message(callbackQuery.from_user.id,"rebooted")
+        os.system('shutdown -r now')
     if callbackQuery.data == "user_list":
         callbackQuery.edit_message_text(
             PAGE_USERS,
