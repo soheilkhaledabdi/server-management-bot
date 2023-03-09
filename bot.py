@@ -263,8 +263,8 @@ def callback_query(client,callbackQuery):
             show_alert=True
             )
             callbackQuery.edit_message_text(
-            PAGE_USER_EDIT,
-            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
+            PAGE_USERS,
+            reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
         )
         elif callbackQuery.data == f"change_status_{user}_to_enable":
             subprocess.check_output(f"sudo usermod -e -1 -U {user}" , shell=True)
@@ -274,9 +274,9 @@ def callback_query(client,callbackQuery):
             show_alert=True
             )
             callbackQuery.edit_message_text(
-            PAGE_USER_EDIT,
-            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
-        )      
+            PAGE_USERS,
+            reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
+        )   
     if callbackQuery.data == "add_user":
         bot.send_message(callbackQuery.from_user.id,"send name of user")
 
