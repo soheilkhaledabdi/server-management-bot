@@ -240,10 +240,10 @@ def callback_query(client,callbackQuery):
             if user != "root" : 
                 PAGE_USER_EDIT = f"Performing operations on the {user} user"
                 if is_user_active(user) == False:
-                    callbackUserText = "status [enable]"
+                    callbackUserText = "status [enable] click to change"
                     callbackUser = f"change_status_{user}_to_disable"
                 else : 
-                    callbackUserText = "status [disable]"
+                    callbackUserText = "status [disable] click to change"
                     callbackUser = f"change_status_{user}_to_enable"
 
                 PAGE_USER_EDIT_BUTTON = [
