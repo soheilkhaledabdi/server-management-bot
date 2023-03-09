@@ -107,8 +107,8 @@ PAGE3_BUTTON = [
     ]
 ]
 
-CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True).decode("utf-8")
-
+CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True)
+CountOfUser = CountOfUser.decode("utf-8")
 PAGE_USERS = f"select user (count of user[{CountOfUser}])"
 PAGE_USERS_BUTTON = []
 
@@ -238,13 +238,25 @@ def callback_query(client,callbackQuery):
     for user in getAllUser.decode("utf-8").splitlines():
         if callbackQuery.data == user:
             PAGE_USER_EDIT = f"Performing operations on the {user} user"
+            if is_user_active(user) == True:
+                callbackUser = f"change_status_{user}_to_disable"
+            else : 
+               callbackUser = f"change_status_{user}_to_enable"
+
             PAGE_USER_EDIT_BUTTON = [
-                InlineKeyboardButton('status',callback_data=[])
+                [
+                InlineKeyboardButton('status [enable]',callback_data=callbackUser)
+                ]
             ]
+            
             callbackQuery.edit_message_text(
             PAGE_USER_EDIT,
-            reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
+            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
         )
+        elif callbackQuery.data == f"change_status_{user}_to_disable":
+            subprocess.check_output(f"usermod -L -e 1 {user}", shell=True)
+        elif callbackQuery.data == f"change_status_{user}_to_enable":
+            subprocess.check_output(f"sudo usermod -e -1 -U {user}" , shell=True)          
     if callbackQuery.data == "add_user":
         bot.send_message(callbackQuery.from_user.id,"send name of user")
 
@@ -278,4 +290,4 @@ def callback_query(client,callbackQuery):
             )      
 
 print("bot started")
-# bot.run()
+bot.run()
