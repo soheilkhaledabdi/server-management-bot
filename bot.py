@@ -74,7 +74,7 @@ PAGE1_BUTTON = [
     ]
     ,
     [
-        InlineKeyboardButton('Back To Page 1' , callback_data="back_to_menu")
+        InlineKeyboardButton('Back To menu' , callback_data="back_to_menu")
     ]
 ]
 
@@ -90,6 +90,9 @@ PAGE2_BUTTON = [
     [
         InlineKeyboardButton('Reboot' , callback_data="reboot"),
         InlineKeyboardButton('update and upgrade' , callback_data="update")
+    ] ,
+    [
+        InlineKeyboardButton('Back To menu' , callback_data="back_to_menu")
     ]
 ]
 
@@ -109,7 +112,7 @@ PAGE3_BUTTON = [
 
 CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True)
 CountOfUser = CountOfUser.decode("utf-8")
-PAGE_USERS = f"select user (count of user[{CountOfUser}])"
+PAGE_USERS = f"select user (count of user {CountOfUser})"
 PAGE_USERS_BUTTON = []
 
 getAllUser = subprocess.check_output("""grep "/bin/bash" /etc/passwd | cut -d: -f1""", shell=True)
@@ -123,6 +126,11 @@ for i in range(0, len(getAllUser.decode("utf-8").splitlines()), 2):
     else:
         button1 = InlineKeyboardButton(text=getAllUser.decode("utf-8").splitlines()[i], callback_data=getAllUser.decode("utf-8").splitlines()[i])
         PAGE_USERS_BUTTON.append([button1])
+
+PAGE_USERS_BUTTON.append([
+        InlineKeyboardButton('back' , callback_data="back_to_page_3"),
+        InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
+])
 
 InlineKeyboardButton('root' , callback_data='root')
 # end pages
@@ -230,7 +238,7 @@ def callback_query(client,callbackQuery):
                 resultSpeedTest,
                 show_alert=True
         )
-    if callbackQuery.data == "users" :
+    if callbackQuery.data == "users":
         callbackQuery.edit_message_text(
             PAGE3_TEXT,
             reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
@@ -283,6 +291,18 @@ def callback_query(client,callbackQuery):
     if callbackQuery.data == "reboot":
         bot.send_message(callbackQuery.from_user.id,"rebooted")
         os.system('shutdown -r now')
+    if callbackQuery.data == "update":
+        update_cmd = "apt update"
+        subprocess.run(update_cmd.split())
+
+        upgrade_cmd = "apt upgrade -y"
+        subprocess.run(upgrade_cmd.split())
+        bot.send_message(callbackQuery.from_user.id,"server updated")
+    if callbackQuery.data == "back_to_page_3":
+        callbackQuery.edit_message_text(
+            PAGE3_TEXT,
+            reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
+        )
     if callbackQuery.data == "user_list":
         callbackQuery.edit_message_text(
             PAGE_USERS,
