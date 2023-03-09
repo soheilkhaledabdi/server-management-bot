@@ -239,13 +239,15 @@ def callback_query(client,callbackQuery):
         if callbackQuery.data == user:
             PAGE_USER_EDIT = f"Performing operations on the {user} user"
             if is_user_active(user) == True:
+                callbackUserText = "status [enable]"
                 callbackUser = f"change_status_{user}_to_disable"
             else : 
+               callbackUserText = "status [disable]"
                callbackUser = f"change_status_{user}_to_enable"
 
             PAGE_USER_EDIT_BUTTON = [
                 [
-                InlineKeyboardButton('status [enable]',callback_data=callbackUser)
+                InlineKeyboardButton(callbackUserText,callback_data=callbackUser)
                 ]
             ]
             
