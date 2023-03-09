@@ -258,7 +258,7 @@ def callback_query(client,callbackQuery):
         elif callbackQuery.data == f"change_status_{user}_to_disable":
             subprocess.check_output(f"usermod -L -e 1 {user}", shell=True)
             success = f"account {user} disabled"
-            success.answer(
+            callbackQuery.answer(
             success,
             show_alert=True
             )
@@ -269,7 +269,7 @@ def callback_query(client,callbackQuery):
         elif callbackQuery.data == f"change_status_{user}_to_enable":
             subprocess.check_output(f"sudo usermod -e -1 -U {user}" , shell=True)
             success = f"account {user} enabled"
-            success.answer(
+            callbackQuery.answer(
             success,
             show_alert=True
             )
