@@ -309,6 +309,10 @@ def callback_query(client,callbackQuery):
             dataOfInfoServer,
             show_alert=True
             )      
-
+    if callbackQuery.data == "back_to_page_2":
+        callbackQuery.edit_message_text(
+            PAGE2_TEXT,
+            reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
+        )
 print("bot started")
 bot.run()
