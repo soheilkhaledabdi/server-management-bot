@@ -257,8 +257,26 @@ def callback_query(client,callbackQuery):
         )
         elif callbackQuery.data == f"change_status_{user}_to_disable":
             subprocess.check_output(f"usermod -L -e 1 {user}", shell=True)
+            success = f"account {user} disabled"
+            success.answer(
+            success,
+            show_alert=True
+            )
+            callbackQuery.edit_message_text(
+            PAGE_USER_EDIT,
+            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
+        )
         elif callbackQuery.data == f"change_status_{user}_to_enable":
-            subprocess.check_output(f"sudo usermod -e -1 -U {user}" , shell=True)          
+            subprocess.check_output(f"sudo usermod -e -1 -U {user}" , shell=True)
+            success = f"account {user} enabled"
+            success.answer(
+            success,
+            show_alert=True
+            )
+            callbackQuery.edit_message_text(
+            PAGE_USER_EDIT,
+            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
+        )      
     if callbackQuery.data == "add_user":
         bot.send_message(callbackQuery.from_user.id,"send name of user")
 
