@@ -237,23 +237,24 @@ def callback_query(client,callbackQuery):
         )
     for user in getAllUser.decode("utf-8").splitlines():
         if callbackQuery.data == user:
-            PAGE_USER_EDIT = f"Performing operations on the {user} user"
-            if is_user_active(user) == True:
-                callbackUserText = "status [enable]"
-                callbackUser = f"change_status_{user}_to_disable"
-            else : 
-               callbackUserText = "status [disable]"
-               callbackUser = f"change_status_{user}_to_enable"
+            if user != "root" : 
+                PAGE_USER_EDIT = f"Performing operations on the {user} user"
+                if is_user_active(user) == False:
+                    callbackUserText = "status [enable]"
+                    callbackUser = f"change_status_{user}_to_disable"
+                else : 
+                    callbackUserText = "status [disable]"
+                    callbackUser = f"change_status_{user}_to_enable"
 
-            PAGE_USER_EDIT_BUTTON = [
-                [
-                InlineKeyboardButton(callbackUserText,callback_data=callbackUser)
+                PAGE_USER_EDIT_BUTTON = [
+                    [
+                    InlineKeyboardButton(callbackUserText,callback_data=callbackUser)
+                    ]
                 ]
-            ]
             
-            callbackQuery.edit_message_text(
-            PAGE_USER_EDIT,
-            reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
+                callbackQuery.edit_message_text(
+                PAGE_USER_EDIT,
+                reply_markup=InlineKeyboardMarkup(PAGE_USER_EDIT_BUTTON)
         )
         elif callbackQuery.data == f"change_status_{user}_to_disable":
             subprocess.check_output(f"usermod -L -e 1 {user}", shell=True)
