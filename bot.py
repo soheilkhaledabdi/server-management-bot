@@ -22,7 +22,7 @@ def add_user(username,password,expiration_date,max_logins):
     subprocess.run(['chage', '-E', expiration_date, username])
     subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
     subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
-
+    return "user created"
 
 def internet_speed():
     speed = speedtest.Speedtest()
@@ -139,6 +139,20 @@ PAGE_USERS_BUTTON.append([
         InlineKeyboardButton('back' , callback_data="back_to_page_3"),
         InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
 ])
+
+PAGE_ADD_USER_TEXT = """
+    Add new user
+    username : {}
+    password : {}
+    limit : {}
+    expire : {}
+    """
+
+PAGE_ADD_USER_BUTTON = [
+    [
+         InlineKeyboardButton('Cancel', callback_data="cancel_add_user")
+    ]
+]
 # end pages
 
 #  get data from server 
@@ -293,7 +307,48 @@ def callback_query(client,callbackQuery):
             reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
         )   
     if callbackQuery.data == "add_user":
-        bot.send_message(callbackQuery.from_user.id,"send name of user")
+        callbackQuery.edit_message_text(
+            PAGE_ADD_USER_TEXT,
+            reply_markup=InlineKeyboardMarkup(PAGE_ADD_USER_BUTTON)
+        )
+        
+        bot.send_message(callbackQuery.from_user.id,"send data of new user with format [username password dataTime limit]")
+        bot.send_message(callbackQuery.from_user.id,"example : testUsername testPassword 2023/3/32")
+        @bot.on_message(filters.text & filters.private)
+        def getInformationFromUser(bot, message):
+            UserInformation = message.text.split()
+            if len(UserInformation) == 4:
+                global username,password,dataTime,limit
+                username = UserInformation[0]
+                password = UserInformation[1]
+                dataTime = UserInformation[2]
+                limit = UserInformation[3]
+                PAGE_ADD_USER_BUTTON_CALLBACK = [
+                    [
+                        InlineKeyboardButton('confirm' , callback_data='confirm'),
+                        InlineKeyboardButton('cancel' , callback_data='cancel')
+                    ]
+                ]
+                reply_markup = InlineKeyboardMarkup(PAGE_ADD_USER_BUTTON_CALLBACK)
+                message.reply(
+                text=PAGE_ADD_USER_TEXT.format(username,password,limit,dataTime),
+                reply_markup=reply_markup,
+                disable_web_page_preview=True
+            )
+            
+    if callbackQuery.data == 'confirm':
+        add_user(username,password,dataTime,limit)
+        callbackQuery.edit_message_text(
+                PAGE3_TEXT,
+                reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
+            )
+    if  callbackQuery.data == "cancel":
+        callbackQuery.edit_message_text(
+            PAGE3_TEXT,
+            reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
+        )
+        
+    
     if callbackQuery.data == "reboot":
         bot.send_message(callbackQuery.from_user.id,"rebooted")
         os.system('shutdown -r now')
