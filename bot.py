@@ -16,6 +16,14 @@ bot = Client(
             ,bot_token=os.getenv("BOT_TOKEN"))
 
 # function get speed test
+
+def add_user(username,password,expiration_date,max_logins):
+    subprocess.run(['useradd', username , '-p' , password])
+    subprocess.run(['chage', '-E', expiration_date, username])
+    subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
+    subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
+
+
 def internet_speed():
     speed = speedtest.Speedtest()
     download_speed = round(speed.download() / (1024*1024), 2) 
@@ -131,8 +139,6 @@ PAGE_USERS_BUTTON.append([
         InlineKeyboardButton('back' , callback_data="back_to_page_3"),
         InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
 ])
-
-InlineKeyboardButton('root' , callback_data='root')
 # end pages
 
 #  get data from server 
