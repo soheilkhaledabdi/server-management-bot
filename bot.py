@@ -7,6 +7,7 @@ from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram import enums
 import speedtest
 from datetime import datetime
+import crypt
 # migrate_from_chat_id
 load_dotenv()
 bot = Client(
@@ -16,9 +17,8 @@ bot = Client(
             ,bot_token=os.getenv("BOT_TOKEN"))
 
 # function get speed test
-
 def add_user(username,password,expiration_date,max_logins):
-    subprocess.run(['useradd', username , '-p' , password])
+    subprocess.run(['useradd', username , '-p' , crypt.crypt(password)])
     subprocess.run(['chage', '-E', expiration_date, username])
     subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
     subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
