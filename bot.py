@@ -267,6 +267,8 @@ def callback_query(client,callbackQuery):
         if callbackQuery.data == user:
             if user != "root" : 
                 PAGE_USER_EDIT = f"Performing operations on the {user} user"
+                callbackUserTextDelete = "delete user"
+                callbackUserDelete = f"delete_{user}"
                 if is_user_active(user) == False:
                     callbackUserText = "status [enable] click to change"
                     callbackUser = f"change_status_{user}_to_disable"
@@ -276,7 +278,8 @@ def callback_query(client,callbackQuery):
 
                 PAGE_USER_EDIT_BUTTON = [
                     [
-                    InlineKeyboardButton(callbackUserText,callback_data=callbackUser)
+                    InlineKeyboardButton(callbackUserText,callback_data=callbackUser),
+                    InlineKeyboardButton(callbackUserTextDelete,callback_data=callbackUserDelete)
                     ]
                 ]
             
@@ -305,7 +308,29 @@ def callback_query(client,callbackQuery):
             callbackQuery.edit_message_text(
             PAGE_USERS,
             reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
-        )   
+        )
+        elif callbackQuery.data == f"delete_{user}":
+            textDeleteUser = f"are you sure to delete user {user}"
+            PAGE_USER_DELETE = [
+                [
+                   InlineKeyboardButton("YES",callback_data="yes_delete_user"),
+                   InlineKeyboardButton("NO",callback_data="no_delete_user") 
+                ]
+            ]
+            callbackQuery.edit_message_text(
+                textDeleteUser,
+                reply_markup=InlineKeyboardMarkup(PAGE_USER_DELETE)
+            )
+        elif callbackQuery.data == "yes_delete_user" : 
+            subprocess.run([f"userdel {user}"])
+            callbackQuery.answer(
+            f"user {user} deleted",
+            show_alert=True
+            )
+            callbackQuery.edit_message_text(
+                PAGE_USERS,
+                reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
+            )
     if callbackQuery.data == "add_user":
         callbackQuery.edit_message_text(
             PAGE_ADD_USER_TEXT,
