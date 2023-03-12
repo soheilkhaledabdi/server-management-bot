@@ -1,6 +1,0 @@
-psutil
-shutil
-python-dotenv
-pyrogram
-subprocess
-speedtest-cli
