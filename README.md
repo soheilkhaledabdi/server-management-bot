@@ -1,2 +1,2 @@
-# monitoring-server-bot
-server monitoring with telegram bot
+# server-management-bot 
+server management with telegram bot
