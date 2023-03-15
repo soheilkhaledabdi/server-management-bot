@@ -167,67 +167,6 @@ PAGE_ADD_USER_BUTTON = [
 ]
 # end pages
 
-#  get data from server 
-
-# get data of disk usage
-diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
-diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
-diskAvail = int(psutil.disk_usage('/').free/(1024*1024*1024))
-diskPercent = psutil.disk_usage('/').percent
-
-dataOfDiskUsage = '''
-    Disk Info
-    ---------
-    Total = {} GB
-    Used = {} GB
-    Avail = {} GB
-    Usage = {} %\n'''.format(diskTotal,diskUsed,diskAvail,diskPercent)
-# end data usage
-
-# get data of  cpu and ram
-
-cpuUsage = psutil.cpu_percent(interval=1)
-ramTotal = int(psutil.virtual_memory().total/(1024*1024)) #GB
-ramUsage = int(psutil.virtual_memory().used/(1024*1024)) #GB
-ramFree = int(psutil.virtual_memory().free/(1024*1024)) #GB
-ramUsagePercent = psutil.virtual_memory().percent
-dataOfCpuAndRam = '''
-    CPU & RAM Info
-    ---------
-    CPU Usage = {} %
-    RAM
-    Total = {} MB
-    Usage = {} MB
-    Free  = {} MB
-    Used = {} %\n'''.format(cpuUsage,ramTotal,ramUsage,ramFree,ramUsagePercent)
-
-# end data cpu and ram
-
-
-# get of uptime server
-
-dataOfUpTime = subprocess.check_output(['uptime','-p']).decode('UTF-8')
-
-# end uptime 
-
-
-# get info server
-
-uname = subprocess.check_output(['uname','-rsoi']).decode('UTF-8')
-host = subprocess.check_output(['hostname']).decode('UTF-8')
-ipAddr = subprocess.check_output(['hostname','-I']).decode('UTF-8')
-
-dataOfInfoServer ='''
-    Server Desc
-    ---------
-    OS = {}
-    Hostname = {} 
-    IP Addr = {}'''.format(uname,host,ipAddr)
-
-# end info server
-
-# end
-
 
 
 # command start and help
@@ -408,25 +347,25 @@ def callback_query(client,callbackQuery):
         )
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
-                dataOfDiskUsage,
+                DiskUsage(),
                 show_alert=True
             )
         # send cpu and ram usage data to bot
     elif callbackQuery.data == "cpu_and_ram_usage":
         callbackQuery.answer(
-            dataOfCpuAndRam,
+            CPUANDRAM(),
             show_alert=True
             )
     # send uptime server to bot
     elif  callbackQuery.data == "uptime_server":
         callbackQuery.answer(
-            dataOfUpTime,
+            uptime(),
             show_alert=True
             )
     # send server description to bot
     elif callbackQuery.data == "server_description" :
         callbackQuery.answer(
-            dataOfInfoServer,
+            get_info_server(),
             show_alert=True
             )      
     if callbackQuery.data == "back_to_page_2":
