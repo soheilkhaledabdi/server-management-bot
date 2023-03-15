@@ -49,8 +49,11 @@ SshUserTable = """
 connection = mysql.connector.connect(**configDB)
 cursor = connection.cursor()
 
-cursor.execute(UserTable)
-cursor.execute(SshUserTable)
+try:
+    cursor.execute(UserTable)
+    cursor.execute(SshUserTable)
+except:
+    print("error or exsit tables")
 
 
 connection.commit()
@@ -374,4 +377,4 @@ def callback_query(client,callbackQuery):
             reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
         )
 print("bot started")
-bot.run()
+# bot.run()
