@@ -56,8 +56,6 @@ except:
     print("error or exsit tables")
 
 
-connection.commit()
-connection.close()
 
 bot = Client(
             os.getenv("BOT_NAME")
@@ -66,9 +64,13 @@ bot = Client(
             ,bot_token=os.getenv("BOT_TOKEN"))
 
 # Users who have access permission to use the bot
-users_id = [1734062356,1033070918]
-
-
+cursor.execute("select tel_id from users where is_superadmin = 1")
+user_id = []
+for (tel_id) in cursor:
+    for id in (tel_id):
+        user_id.append(id)
+        
+connection.commit()
 # start message and button
 
 START_MESSAGE = "Choose your operation"
@@ -376,5 +378,7 @@ def callback_query(client,callbackQuery):
             PAGE2_TEXT,
             reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
         )
+
+connection.close()
 print("bot started")
 # bot.run()
