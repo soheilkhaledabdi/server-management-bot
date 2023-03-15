@@ -1,0 +1,10 @@
+os-sys
+psutil
+subprocess32
+mysql.connector
+python-dotenv
+pyrogram
+obsd-crypt
+speedtest
+datetime
+micropython-pwd
