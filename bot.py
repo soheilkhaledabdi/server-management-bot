@@ -1,17 +1,62 @@
 import os
 import psutil
 import subprocess
-import crypt
-import speedtest
 from functions import *
+import mysql.connector
 from dotenv import load_dotenv
-from datetime import datetime
 from pyrogram import Client,filters
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 
-
 # load data for file .env
 load_dotenv()
+
+configDB = {
+  'user': os.getenv("DB_USERNAME"),
+  'password': os.getenv("DB_PASSWORD"),
+  'host': os.getenv("DB_HOST"),
+  'database': os.getenv("DB_DATABASE"),
+  'raise_on_warnings': True
+}
+
+
+UserTable = """
+    CREATE TABLE users
+    (
+        id int NOT NULL auto_increment,
+        tel_id int,
+        name varchar(255),
+        is_superadmin BOOL,
+        is_staff BOOL,
+        is_customer BOOL,
+        PRIMARY KEY (id,tel_id)
+    )
+"""
+
+SshUserTable = """
+    CREATE TABLE ssh_users
+    (
+        id int NOT NULL auto_increment,
+        user_id int NOT NULL,
+        max_logins int NOT NULL,
+        create_at DATE NULL,
+        update_at DATE NULL,
+        expire_at DATE NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+"""
+
+
+connection = mysql.connector.connect(**configDB)
+cursor = connection.cursor()
+
+cursor.execute(UserTable)
+cursor.execute(SshUserTable)
+
+
+connection.commit()
+connection.close()
+
 bot = Client(
             os.getenv("BOT_NAME")
             ,api_id=os.getenv("API_ID")
@@ -20,8 +65,6 @@ bot = Client(
 
 # Users who have access permission to use the bot
 users_id = [1734062356,1033070918]
-
-
 
 
 # start message and button
