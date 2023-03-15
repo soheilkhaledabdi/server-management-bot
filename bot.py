@@ -65,10 +65,10 @@ bot = Client(
 
 # Users who have access permission to use the bot
 cursor.execute("select tel_id from users where is_superadmin = 1")
-user_id = []
+users_id = []
 for (tel_id) in cursor:
     for id in (tel_id):
-        user_id.append(id)
+        users_id.append(id)
         
 connection.commit()
 # start message and button
