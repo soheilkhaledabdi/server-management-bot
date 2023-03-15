@@ -1,14 +1,15 @@
 import os
-from dotenv import load_dotenv
 import psutil
 import subprocess
+import crypt
+import speedtest
+from dotenv import load_dotenv
+from datetime import datetime
 from pyrogram import Client,filters
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
-from pyrogram import enums
-import speedtest
-from datetime import datetime
-import crypt
-# migrate_from_chat_id
+
+
+# load data for file .env
 load_dotenv()
 bot = Client(
             os.getenv("BOT_NAME")
@@ -16,20 +17,18 @@ bot = Client(
             ,api_hash=os.getenv('API_HASH')
             ,bot_token=os.getenv("BOT_TOKEN"))
 
-# function get speed test
-def add_user(username,password,expiration_date,max_logins):
-    subprocess.run(['useradd', username , '-p' , crypt.crypt(password)])
-    subprocess.run(['chage', '-E', expiration_date, username])
-    subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
-    subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
-    return "user created"
 
-def internet_speed():
-    speed = speedtest.Speedtest()
-    download_speed = round(speed.download() / (1024*1024), 2) 
-    upload_speed = round(speed.upload() / (1024*1024), 2)
-    return f"speed of Download {download_speed} , speed of upload {upload_speed}"
 
+# functions
+def add_user(username : str,password : str,expiration_date : str,max_logins : int):
+    try:
+        subprocess.run(['useradd', username , '-p' , crypt.crypt(password)])
+        subprocess.run(['chage', '-E', expiration_date, username])
+        subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
+        subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
+        return True
+    except :
+        return False
 
 def is_user_active(username):
     result = subprocess.run(['chage', '-l', username], stdout=subprocess.PIPE)
@@ -46,10 +45,21 @@ def is_user_active(username):
             else:
                 return False
     return False
+
+
+def internet_speed():
+    try : 
+        speed = speedtest.Speedtest()
+        download_speed = round(speed.download() / (1024*1024), 2)
+        upload_speed = round(speed.upload() / (1024*1024), 2)
+        return f"speed of Download {download_speed} , speed of upload {upload_speed}"
+    except :
+        return "An exception occurred"
+
 # end function
 
-# Users who have access permission to use the bot
 
+# Users who have access permission to use the bot
 users_id = [1734062356,1033070918]
 
 
