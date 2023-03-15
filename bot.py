@@ -1,5 +1,4 @@
 import os
-import psutil
 import subprocess
 from functions import *
 import mysql.connector
@@ -166,6 +165,7 @@ PAGE_ADD_USER_BUTTON = [
     ]
 ]
 # end pages
+
 
 
 

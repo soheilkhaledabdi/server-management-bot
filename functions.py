@@ -1,8 +1,9 @@
 import subprocess
+import pwd
+import psutil
 import crypt
 import speedtest
 from datetime import datetime
-import pwd
 
 
 def add_user(username : str,password : str,expiration_date : str,max_logins : int):
