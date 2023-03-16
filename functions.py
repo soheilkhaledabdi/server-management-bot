@@ -19,7 +19,19 @@ configDB = {
    'auth_plugin' :'mysql_native_password'
 }
 connectionDB = mysql.connector.connect(**configDB)
+cur = connectionDB.cursor()
 
+def getAllSSHusers():
+    try:
+        query = "SELECT * FROM ssh_users"
+        users_list = []
+        cur.execute(query)
+        for (id , user_id ,username,max_logins,create_at,update_at,expire_at) in cur:
+            users_list.append([id , user_id , username, max_logins,create_at ,  update_at , expire_at])
+        return users_list
+    except:
+        return "error"
+    
 
 def add_user(user_id : int ,username : str,password : str,expiration_date : str,max_logins : int):
     try:
@@ -28,7 +40,6 @@ def add_user(user_id : int ,username : str,password : str,expiration_date : str,
         subprocess.run(['chage', '-E', expiration_date, username])
         subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
         subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
-        cur = connectionDB.cursor()
         create_at = datetime.today().strftime("%Y-%m-%d")
         cur.execute(f"INSERT INTO ssh_users VALUE (null,{user_id} ,'{username}',{max_logins}, '{create_at}', null , '{expiration_date}')")
         return True
@@ -147,6 +158,6 @@ def get_info_server():
         IP Addr = {}'''.format(uname,host,ipAddr)
     return InfoServer
 
-print(add_user(1,"lll" , "soheilll" , '2023-10-2',2))
+print(getAllSSHusers())
 connectionDB.commit()
 connectionDB.close()
