@@ -40,11 +40,11 @@ SshUserTable = """
 connection = mysql.connector.connect(**configDB)
 cursor = connection.cursor()
 
-# try:
-cursor.execute(UserTable)
-cursor.execute(SshUserTable)
-# except:
-    # print("error or exsit tables")
+try:
+    cursor.execute(UserTable)
+    cursor.execute(SshUserTable)
+except:
+    print("error or exsit tables")
 
 
 
@@ -118,7 +118,6 @@ PAGE3_BUTTON = [
 ]
 
 CountOfUser = getCountSshUsers()
-CountOfUser = CountOfUser.decode("utf-8")
 PAGE_USERS = f"select user (count of user {CountOfUser})"
 PAGE_USERS_BUTTON = []
 
