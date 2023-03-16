@@ -54,14 +54,6 @@ bot = Client(
             ,api_hash=os.getenv('API_HASH')
             ,bot_token=os.getenv("BOT_TOKEN"))
 
-# Users who have access permission to use the bot
-cursor.execute("select tel_id from users where is_superadmin = 1")
-users_id = []
-for (tel_id) in cursor:
-    for id in (tel_id):
-        users_id.append(id)
-        
-connection.commit()
 # start message and button
 
 START_MESSAGE = "Choose your operation"
@@ -125,7 +117,7 @@ PAGE3_BUTTON = [
     ]
 ]
 
-CountOfUser = subprocess.check_output("grep '/bin/bash' /etc/passwd | wc -l", shell=True)
+CountOfUser = getCountSshUsers()
 CountOfUser = CountOfUser.decode("utf-8")
 PAGE_USERS = f"select user (count of user {CountOfUser})"
 PAGE_USERS_BUTTON = []
@@ -171,7 +163,7 @@ PAGE_ADD_USER_BUTTON = [
 @bot.on_message(filters.command(['start' , 'help']) & filters.private)
 def start(bot,message):
 
-    for user in users_id:
+    for user in getUsersAdmin():
         if message.chat.id == user :
             text = START_MESSAGE
             reply_markup = InlineKeyboardMarkup(START_MESSAGE_BUTTON)
