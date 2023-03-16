@@ -9,25 +9,15 @@ from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 # load data for file .env
 load_dotenv()
 
-configDB = {
-  'user': os.getenv("DB_USERNAME"),
-  'password': os.getenv("DB_PASSWORD"),
-  'host': os.getenv("DB_HOST"),
-  'database': os.getenv("DB_DATABASE"),
-  'raise_on_warnings': True
-}
-
-
 UserTable = """
     CREATE TABLE users
     (
         id int NOT NULL auto_increment,
-        tel_id int,
-        name varchar(255),
-        is_superadmin BOOL,
-        is_staff BOOL,
-        is_customer BOOL,
-        PRIMARY KEY (id,tel_id)
+        tel_id int UNIQUE NOT NULL,
+        is_superadmin BOOLEAN DEFAULT(0),
+        is_staff BOOLEAN DEFAULT(0),
+        is_customer BOOLEAN DEFAULT(1),
+        PRIMARY KEY (id)
     )
 """
 
@@ -36,6 +26,7 @@ SshUserTable = """
     (
         id int NOT NULL auto_increment,
         user_id int NOT NULL,
+        username varchar(255) NULL,
         max_logins int NOT NULL,
         create_at DATE NULL,
         update_at DATE NULL,
@@ -49,11 +40,11 @@ SshUserTable = """
 connection = mysql.connector.connect(**configDB)
 cursor = connection.cursor()
 
-try:
-    cursor.execute(UserTable)
-    cursor.execute(SshUserTable)
-except:
-    print("error or exsit tables")
+# try:
+cursor.execute(UserTable)
+cursor.execute(SshUserTable)
+# except:
+    # print("error or exsit tables")
 
 
 
@@ -179,6 +170,7 @@ PAGE_ADD_USER_BUTTON = [
 
 @bot.on_message(filters.command(['start' , 'help']) & filters.private)
 def start(bot,message):
+
     for user in users_id:
         if message.chat.id == user :
             text = START_MESSAGE
@@ -318,7 +310,7 @@ def callback_query(client,callbackQuery):
             )
             
     if callbackQuery.data == 'confirm':
-        add_user(username,password,dataTime,limit)
+        add_user(callbackQuery.from_user.id,username,password,dataTime,limit)
         callbackQuery.edit_message_text(
                 PAGE3_TEXT,
                 reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
