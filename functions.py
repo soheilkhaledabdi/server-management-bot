@@ -1,17 +1,36 @@
+import os
 import subprocess
 import pwd
 import psutil
 import crypt
 import speedtest
+import mysql.connector
+from dotenv import load_dotenv
 from datetime import datetime
 
+# load data for file .env
+load_dotenv()
+configDB = {
+  'user': os.getenv("DB_USERNAME"),
+  'password': os.getenv("DB_PASSWORD"),
+  'host': os.getenv("DB_HOST"),
+  'database': os.getenv("DB_DATABASE"),
+  'raise_on_warnings': True,
+   'auth_plugin' :'mysql_native_password'
+}
+connectionDB = mysql.connector.connect(**configDB)
 
-def add_user(username : str,password : str,expiration_date : str,max_logins : int):
+
+def add_user(user_id : int ,username : str,password : str,expiration_date : str,max_logins : int):
     try:
-        subprocess.run(['useradd', username , '-p' , crypt.crypt(password)])
+        salt = crypt.mksalt(crypt.METHOD_SHA512)
+        subprocess.run(['useradd', username , '-p' , crypt.crypt(password, salt)])
         subprocess.run(['chage', '-E', expiration_date, username])
         subprocess.run(['sudo', 'bash', '-c', f'echo "{username} hard maxlogins {max_logins}" >> /etc/security/limits.conf'])
         subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
+        cur = connectionDB.cursor()
+        create_at = datetime.today().strftime("%Y-%m-%d")
+        cur.execute(f"INSERT INTO ssh_users VALUE (null,{user_id} ,'{username}',{max_logins}, '{create_at}', null , '{expiration_date}')")
         return True
     except :
         return False
@@ -127,3 +146,7 @@ def get_info_server():
         Hostname = {} 
         IP Addr = {}'''.format(uname,host,ipAddr)
     return InfoServer
+
+print(add_user(1,"lll" , "soheilll" , '2023-10-2',2))
+connectionDB.commit()
+connectionDB.close()
