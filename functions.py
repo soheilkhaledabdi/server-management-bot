@@ -21,6 +21,17 @@ configDB = {
 connectionDB = mysql.connector.connect(**configDB)
 cur = connectionDB.cursor()
 
+def getUsersAdmin():
+    try:
+        cur.execute("select tel_id from users where is_superadmin = 1")
+        users_id = []
+        for (tel_id) in cur:
+            for id in (tel_id):
+                users_id.append(id)
+        return users_id
+    except :
+        return "error"
+
 def getAllSSHusers():
     try:
         query = "SELECT * FROM ssh_users"
