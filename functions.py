@@ -31,7 +31,16 @@ def getAllSSHusers():
         return users_list
     except:
         return "error"
-    
+
+def getCountSshUsers():
+    try:
+        query = "SELECT count(*) FROM ssh_users"
+        cur.execute(query)
+        for (count) in cur:
+            for c in count:
+                return c 
+    except : 
+        return "error"
 
 def add_user(user_id : int ,username : str,password : str,expiration_date : str,max_logins : int):
     try:
@@ -158,6 +167,6 @@ def get_info_server():
         IP Addr = {}'''.format(uname,host,ipAddr)
     return InfoServer
 
-print(getAllSSHusers())
+
 connectionDB.commit()
 connectionDB.close()
