@@ -32,13 +32,14 @@ def getUsersAdmin():
     except :
         return "error"
 
-def getAllSSHusers():
+def getAllUsernameSSHusers():
     try:
-        query = "SELECT * FROM ssh_users"
+        query = "SELECT username FROM ssh_users"
         users_list = []
         cur.execute(query)
-        for (id , user_id ,username,max_logins,create_at,update_at,expire_at) in cur:
-            users_list.append([id , user_id , username, max_logins,create_at ,  update_at , expire_at])
+        for (username) in cur:
+            for user in username:
+                users_list.append(user)
         return users_list
     except:
         return "error"
@@ -177,7 +178,3 @@ def get_info_server():
         Hostname = {} 
         IP Addr = {}'''.format(uname,host,ipAddr)
     return InfoServer
-
-
-connectionDB.commit()
-connectionDB.close()
