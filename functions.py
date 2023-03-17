@@ -63,6 +63,7 @@ def add_user(user_id : int ,username : str,password : str,expiration_date : str,
         subprocess.run(['sudo', 'su', '-', username, '-c', 'ulimit -n -u'])
         create_at = datetime.today().strftime("%Y-%m-%d")
         cur.execute(f"INSERT INTO ssh_users VALUE (null,{user_id} ,'{username}',{max_logins}, '{create_at}', null , '{expiration_date}')")
+        connectionDB.commit()
         return True
     except :
         return False
