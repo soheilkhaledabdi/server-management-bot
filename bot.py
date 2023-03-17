@@ -121,22 +121,25 @@ CountOfUser = getCountSshUsers()
 PAGE_USERS = f"select user (count of user {CountOfUser})"
 PAGE_USERS_BUTTON = []
 
-getAllUser = subprocess.check_output("""grep "/bin/bash" /etc/passwd | cut -d: -f1""", shell=True)
+getAllUser = getAllUsernameSSHusers()
 
 
-for i in range(0, len(getAllUser.decode("utf-8").splitlines()), 2):
-    if i+1 < len(getAllUser.decode("utf-8").splitlines()):
-        button1 = InlineKeyboardButton(text=getAllUser.decode("utf-8").splitlines()[i], callback_data=getAllUser.decode("utf-8").splitlines()[i])
-        button2 = InlineKeyboardButton(text=getAllUser.decode("utf-8").splitlines()[i+1], callback_data=getAllUser.decode("utf-8").splitlines()[i+1])
+
+for i in range(0, len(getAllUser), 2):
+    if i+1 < len(getAllUser):
+        button1 = InlineKeyboardButton(text=getAllUser[i], callback_data=getAllUser[i])
+        button2 = InlineKeyboardButton(text=getAllUser[i+1], callback_data=getAllUser[i+1])
         PAGE_USERS_BUTTON.append([button1, button2])
     else:
-        button1 = InlineKeyboardButton(text=getAllUser.decode("utf-8").splitlines()[i], callback_data=getAllUser.decode("utf-8").splitlines()[i])
+        button1 = InlineKeyboardButton(text=getAllUser[i], callback_data=getAllUser[i])
         PAGE_USERS_BUTTON.append([button1])
 
 PAGE_USERS_BUTTON.append([
         InlineKeyboardButton('back' , callback_data="back_to_page_3"),
         InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
 ])
+
+print(PAGE_USERS_BUTTON)
 
 PAGE_ADD_USER_TEXT = """
     Add new user
