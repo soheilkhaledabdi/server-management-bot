@@ -139,8 +139,6 @@ PAGE_USERS_BUTTON.append([
         InlineKeyboardButton('back to menu' , callback_data="back_to_menu")
 ])
 
-print(PAGE_USERS_BUTTON)
-
 PAGE_ADD_USER_TEXT = """
     Add new user
     username : {}
@@ -161,10 +159,25 @@ PAGE_ADD_USER_BUTTON = [
 
 # command start and help
 # filter with command,private,number id 
-
+getAllTelID = "SELECT tel_id from users"
+cursor.execute(getAllTelID)
 @bot.on_message(filters.command(['start' , 'help']) & filters.private)
 def start(bot,message):
-
+    for tel_id in cursor:
+        for id in tel_id:
+            if id == message.chat.id:
+                wellcom = f"wellcome back to my bot {message.chat.username}"
+                message.reply(
+                text=wellcom,
+                disable_web_page_preview=True
+            )
+                break
+        else:
+            bot.send_message(message.chat.id,'wellcome to my bot')
+            print(message.chat.id)
+            cur.execute(f"INSERT INTO users VALUE (null,{message.chat.id},0,0,1)")
+            connectionDB.commit()
+                
     for user in getUsersAdmin():
         if message.chat.id == user :
             text = START_MESSAGE
@@ -205,7 +218,7 @@ def callback_query(client,callbackQuery):
             PAGE3_TEXT,
             reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
         )
-    for user in getAllUser.decode("utf-8").splitlines():
+    for user in getAllUser:
         if callbackQuery.data == user:
             if user != "root" : 
                 PAGE_USER_EDIT = f"Performing operations on the {user} user"
@@ -304,7 +317,12 @@ def callback_query(client,callbackQuery):
             )
             
     if callbackQuery.data == 'confirm':
-        add_user(callbackQuery.from_user.id,username,password,dataTime,limit)
+        cur.execute(f'SELECT id from users where tel_id = {callbackQuery.from_user.id}')
+        for id in cur:
+            for i in id:
+                id = i
+    
+        add_user(id,username,password,dataTime,limit)
         callbackQuery.edit_message_text(
                 PAGE3_TEXT,
                 reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
@@ -365,6 +383,7 @@ def callback_query(client,callbackQuery):
             reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
         )
 
+connectionDB.commit()
 connection.close()
 print("bot started")
-# bot.run()
+bot.run()
