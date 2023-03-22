@@ -95,6 +95,9 @@ class Users:
     def delete_user(self , username : str):
         try:
             subprocess.run(["userdel" , "-r" ,username])
+            q = f"DELETE FROM ssh_users where username = '{username}' "
+            cur.execute(q)
+            self.connectionDB.commit()
             if self.check_user_exsit(username) == False:
                 return True
             else:
