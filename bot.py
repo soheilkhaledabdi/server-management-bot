@@ -277,15 +277,22 @@ def callback_query(client,callbackQuery):
                 reply_markup=InlineKeyboardMarkup(PAGE_USER_DELETE)
             )
         elif callbackQuery.data == "yes_delete_user" : 
-            subprocess.run(["userdel" , user])
-            callbackQuery.answer(
-            f"user {user} deleted",
-            show_alert=True
-            )
+            DeleteUser = users.delete_user(user)
+            if DeleteUser == True :
+                callbackQuery.answer(
+                f"user {user} deleted",
+                show_alert=True
+                )
+            else:
+                callbackQuery.answer(
+                f"user {user} undeleted",
+                show_alert=True
+                )
             callbackQuery.edit_message_text(
                 PAGE_USERS,
                 reply_markup=InlineKeyboardMarkup(PAGE_USERS_BUTTON)
             )
+            
     if callbackQuery.data == "add_user":
         callbackQuery.edit_message_text(
             PAGE_ADD_USER_TEXT,
