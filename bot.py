@@ -1,6 +1,6 @@
 import os
 import subprocess
-from Users import *
+from Users import Users
 import mysql.connector
 from dotenv import load_dotenv
 from pyrogram import Client,filters
@@ -35,9 +35,9 @@ SshUserTable = """
         FOREIGN KEY (user_id) REFERENCES users(id)
     )
 """
+users = Users()
 
-
-connection = mysql.connector.connect(**configDB)
+connection = mysql.connector.connect(**users.configDB)
 cursor = connection.cursor()
 
 try:
@@ -117,11 +117,11 @@ PAGE3_BUTTON = [
     ]
 ]
 
-CountOfUser = getCountSshUsers()
+CountOfUser = users.getCountSshUsers()
 PAGE_USERS = f"select user (count of user {CountOfUser})"
 PAGE_USERS_BUTTON = []
 
-getAllUser = getAllUsernameSSHusers()
+getAllUser = users.getAllUsernameSSHusers()
 
 
 
@@ -175,10 +175,10 @@ def start(bot,message):
         else:
             bot.send_message(message.chat.id,'wellcome to my bot')
             print(message.chat.id)
-            cur.execute(f"INSERT INTO users VALUE (null,{message.chat.id},0,0,1)")
-            connectionDB.commit()
+            users.cur.execute(f"INSERT INTO users VALUE (null,{message.chat.id},0,0,1)")
+            users.connectionDB.commit()
                 
-    for user in getUsersAdmin():
+    for user in users.getUsersAdmin():
         if message.chat.id == user :
             text = START_MESSAGE
             reply_markup = InlineKeyboardMarkup(START_MESSAGE_BUTTON)
@@ -208,7 +208,7 @@ def callback_query(client,callbackQuery):
             reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
         )
     if callbackQuery.data == "speed_test":
-        resultSpeedTest = internet_speed()
+        resultSpeedTest = users.internet_speed()
         callbackQuery.answer(
                 resultSpeedTest,
                 show_alert=True
@@ -224,7 +224,7 @@ def callback_query(client,callbackQuery):
                 PAGE_USER_EDIT = f"Performing operations on the {user} user"
                 callbackUserTextDelete = "delete user"
                 callbackUserDelete = f"delete_{user}"
-                if is_user_active(user) == False:
+                if users.is_user_active(user) == False:
                     callbackUserText = "status [enable] click to change"
                     callbackUser = f"change_status_{user}_to_disable"
                 else : 
@@ -317,12 +317,12 @@ def callback_query(client,callbackQuery):
             )
             
     if callbackQuery.data == 'confirm':
-        cur.execute(f'SELECT id from users where tel_id = {callbackQuery.from_user.id}')
-        for id in cur:
+        users.cur.execute(f'SELECT id from users where tel_id = {callbackQuery.from_user.id}')
+        for id in users.cur:
             for i in id:
                 id = i
     
-        add_user(id,username,password,dataTime,limit)
+        users.add_user(id,username,password,dataTime,limit)
         callbackQuery.edit_message_text(
                 PAGE3_TEXT,
                 reply_markup=InlineKeyboardMarkup(PAGE3_BUTTON)
@@ -356,25 +356,25 @@ def callback_query(client,callbackQuery):
         )
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
-                DiskUsage(),
+                users.DiskUsage(),
                 show_alert=True
             )
         # send cpu and ram usage data to bot
     elif callbackQuery.data == "cpu_and_ram_usage":
         callbackQuery.answer(
-            CPUANDRAM(),
+            users.CPUANDRAM(),
             show_alert=True
             )
     # send uptime server to bot
     elif  callbackQuery.data == "uptime_server":
         callbackQuery.answer(
-            uptime(),
+            users.uptime(),
             show_alert=True
             )
     # send server description to bot
     elif callbackQuery.data == "server_description" :
         callbackQuery.answer(
-            get_info_server(),
+            users.users.get_info_server(),
             show_alert=True
             )      
     if callbackQuery.data == "back_to_page_2":
@@ -383,7 +383,7 @@ def callback_query(client,callbackQuery):
             reply_markup=InlineKeyboardMarkup(PAGE2_BUTTON)
         )
 
-connectionDB.commit()
+users.connectionDB.commit()
 connection.close()
 print("bot started")
 bot.run()
