@@ -23,7 +23,7 @@ class Users:
     connectionDB = mysql.connector.connect(**configDB)
     cur = connectionDB.cursor()
 
-    def getUsersAdmin():
+    def getUsersAdmin(self):
         try:
             cur.execute("select tel_id from users where is_superadmin = 1")
             users_id = []
@@ -34,7 +34,7 @@ class Users:
         except :
             return "error"
 
-    def getAllUsernameSSHusers():
+    def getAllUsernameSSHusers(self):
         try:
             query = "SELECT username FROM ssh_users"
             users_list = []
@@ -46,7 +46,7 @@ class Users:
         except:
             return "error"
 
-    def getCountSshUsers():
+    def getCountSshUsers(self):
         try:
             query = "SELECT count(*) FROM ssh_users"
             cur.execute(query)
@@ -83,7 +83,7 @@ class Users:
         else:
             return False
     
-    def check_user_exsit(username : str):
+    def check_user_exsit(self,username : str):
         try:
             pwd.getpwnam(username)
             return True
@@ -103,7 +103,7 @@ class Users:
             return "An exception occurred"
     
     
-    def is_user_active(username):
+    def is_user_active(self,username):
         result = subprocess.run(['chage', '-l', username], stdout=subprocess.PIPE)
         output = result.stdout.decode().strip()
         for line in output.split('\n'):
@@ -119,7 +119,7 @@ class Users:
                     return False
         return False
     
-    def internet_speed():
+    def internet_speed(self):
         try : 
             speed = speedtest.Speedtest()
             download_speed = round(speed.download() / (1024*1024), 2)
@@ -129,7 +129,7 @@ class Users:
             return "An exception occurred"
         
         
-    def DiskUsage():
+    def DiskUsage(self):
         diskTotal = int(psutil.disk_usage('/').total/(1024*1024*1024))
         diskUsed = int(psutil.disk_usage('/').used/(1024*1024*1024))
         diskAvail = int(psutil.disk_usage('/').free/(1024*1024*1024))
@@ -144,7 +144,7 @@ class Users:
             Usage = {} %\n'''.format(diskTotal,diskUsed,diskAvail,diskPercent)
         return DiskUsage
     
-    def CPUANDRAM():
+    def CPUANDRAM(self):
         cpuUsage = psutil.cpu_percent(interval=1)
         ramTotal = int(psutil.virtual_memory().total/(1024*1024)) #GB
         ramUsage = int(psutil.virtual_memory().used/(1024*1024)) #GB
@@ -162,12 +162,12 @@ class Users:
         return CPURAM
 
 
-    def uptime():
+    def uptime(self):
         UpTime = subprocess.check_output(['uptime','-p']).decode('UTF-8')
         return UpTime
 
 
-    def get_info_server():
+    def get_info_server(self):
         uname = subprocess.check_output(['uname','-rsoi']).decode('UTF-8')
         host = subprocess.check_output(['hostname']).decode('UTF-8')
         ipAddr = subprocess.check_output(['hostname','-I']).decode('UTF-8')
