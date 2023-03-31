@@ -1,6 +1,7 @@
 import os
 import subprocess
 from Users import Users
+from Monitoring import Monitoring
 import mysql.connector
 from dotenv import load_dotenv
 from pyrogram import Client,filters
@@ -36,7 +37,7 @@ SshUserTable = """
     )
 """
 users = Users()
-
+monitoring = Monitoring()
 connection = mysql.connector.connect(**users.configDB)
 cursor = connection.cursor()
 
@@ -363,25 +364,25 @@ def callback_query(client,callbackQuery):
         )
     if callbackQuery.data == "disk_usage":
         callbackQuery.answer(
-                users.DiskUsage(),
+                monitoring.DiskUsage(),
                 show_alert=True
             )
         # send cpu and ram usage data to bot
     elif callbackQuery.data == "cpu_and_ram_usage":
         callbackQuery.answer(
-            users.CPUANDRAM(),
+            monitoring.CPUANDRAM(),
             show_alert=True
             )
     # send uptime server to bot
     elif  callbackQuery.data == "uptime_server":
         callbackQuery.answer(
-            users.uptime(),
+            monitoring.uptime(),
             show_alert=True
             )
     # send server description to bot
     elif callbackQuery.data == "server_description" :
         callbackQuery.answer(
-            users.users.get_info_server(),
+            monitoring.get_info_server(),
             show_alert=True
             )      
     if callbackQuery.data == "back_to_page_2":
