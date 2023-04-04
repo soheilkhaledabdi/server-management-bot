@@ -62,4 +62,19 @@ class Users:
                 else:
                     return False
         return False
-    
+
+
+    def getCountOfUserOnline(self):
+        try :
+            output = subprocess.check_output(['ps', '-aux'])
+
+            count = 0
+            for line in output.splitlines():
+                if b"sshd" in line and b"priv" in line:
+                    count += 1
+            result = count
+            return result
+        except :
+            return False
+
+
